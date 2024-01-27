@@ -13,15 +13,7 @@ import firebaseUtils
 from datetime import datetime
 
 
-def get_fiction_list(url):
-    html = requests.get(url)
-    # html = browser.page_source
-    if not html.ok:
-        print("request failed\n" + str(html))
-    page = BeautifulSoup(html.content, 'html.parser')
-    fictions = parserList.parse_list(page)
-    print(*fictions, sep="\n")
-    return fictions
+
 
 
 def scrape_push_rising_starts():

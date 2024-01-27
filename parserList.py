@@ -1,5 +1,6 @@
 from bs4 import BeautifulSoup
 import re
+import requests
 
 from more_itertools import strip
 
@@ -10,7 +11,7 @@ def get_int(str) :
 def parse_fic(fic):
     title = fic.find("h2", {"class": "fiction-title"}).text.strip("\n")
     url = fic.find("h2", {"class": "fiction-title"}).find("a")['href']
-    id = re.search("fiction\/(\d+)", url).group()
+    id = int(re.search("fiction\/(\d+)", url).group(1))
     stats = fic.find_all("div", {"class": "col-sm-6 uppercase bold font-blue-dark"})
     followers = get_int(stats[0].text)
     rating = float(fic.find("div", {"aria-label": re.compile("^Rating:")}).find("span")['title'])
@@ -40,4 +41,14 @@ def parse_list(page):
     fiction_items = fictions.find_all("div", {"class": "fiction-list-item row"})
     # print(fiction_items)
     fictions = list(map(parse_fic, fiction_items))
+    return fictions
+
+def get_fiction_list(url):
+    html = requests.get(url)
+    # html = browser.page_source
+    if not html.ok:
+        print("request failed\n" + str(html))
+    page = BeautifulSoup(html.content, 'html.parser')
+    fictions = parse_list(page)
+    print(*fictions, sep="\n")
     return fictions
