@@ -9,22 +9,24 @@ from bs4 import BeautifulSoup
 import requests
 
 import parserList
-import firebaseUtils
 from datetime import datetime
+import planetScale_utils
 
-
-
-
-
-def scrape_push_rising_starts():
+def scrape_rising_stars():
     url = "https://www.royalroad.com/fictions/rising-stars"
-    fictions = get_fiction_list(url)
+    fictions = parserList.get_fiction_list(url)
 
     # getting time
     now = datetime.now()
     current_time = now.strftime("%H:%M:%S")
-    firebaseUtils.add_snapshot(current_time, "rising starts", fictions)
+
+
+
+def create_sql_insert(fics, url):
+    db = planetScale_utils.pl_db()
+    db.push_to_fic(fics)
+    db.push_to_rising_stars(fics)
 
 
 if __name__ == "__main__":
-    scrape_push_rising_starts()
+    scrape_rising_stars()

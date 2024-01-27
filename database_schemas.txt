@@ -2,15 +2,14 @@ CREATE TABLE IF NOT EXISTS fictions (
     id INT,
     title VARCHAR(100), 
     description VARCHAR(3000),
-    time VARCHAR(30), 
-    rating DECIMAL(4, 2), 
+    rating DECIMAL(4, 2),
     chapters INT,
-    retrived_time DATETIME, 
+    retrieved_time DATETIME,
     url VARCHAR(200),
     followers INT, 
     pages INT,
     views INT,
-    CONSTRAINT PK_Fictions PRIMARY KEY (id, time)
+    CONSTRAINT PK_Fictions PRIMARY KEY (id, retrieved_time)
 );
 
 CREATE TABLE IF NOT EXISTS rising_stars (
