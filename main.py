@@ -13,9 +13,7 @@ import firebaseUtils
 from datetime import datetime
 
 
-
-
-def print_fiction_list(url):
+def get_fiction_list(url):
     html = requests.get(url)
     # html = browser.page_source
     if not html.ok:
@@ -23,11 +21,18 @@ def print_fiction_list(url):
     page = BeautifulSoup(html.content, 'html.parser')
     fictions = parserList.parse_list(page)
     print(*fictions, sep="\n")
+    return fictions
+
+
+def scrape_push_rising_starts():
+    url = "https://www.royalroad.com/fictions/rising-stars"
+    fictions = get_fiction_list(url)
+
     # getting time
     now = datetime.now()
     current_time = now.strftime("%H:%M:%S")
-    firebaseUtils.add_snapshot()
+    firebaseUtils.add_snapshot(current_time, "rising starts", fictions)
+
 
 if __name__ == "__main__":
-    url = "https://www.royalroad.com/fictions/rising-stars"
-    print_fiction_list(url)
+    scrape_push_rising_starts()
