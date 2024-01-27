@@ -1,5 +1,8 @@
-import planetScale_utils
-
+import parserList
+import requests
 
 if __name__ == "__main__":
-    planetScale_utils
+    url = "https://www.royalroad.com/fictions/rising-stars"
+    page = requests.get(url)
+    result = parserList.parse_list(page)
+    print(result[0]["url"])

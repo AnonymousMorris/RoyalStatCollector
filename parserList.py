@@ -9,6 +9,8 @@ def get_int(str) :
 
 def parse_fic(fic):
     title = fic.find("h2", {"class": "fiction-title"}).text.strip("\n")
+    url = fic.find("h2", {"class": "fiction-title"}).find("a")['href']
+    id = re.search("fiction\/(\d+)", url).group()
     stats = fic.find_all("div", {"class": "col-sm-6 uppercase bold font-blue-dark"})
     followers = get_int(stats[0].text)
     rating = float(fic.find("div", {"aria-label": re.compile("^Rating:")}).find("span")['title'])
@@ -19,6 +21,8 @@ def parse_fic(fic):
     summary = fic.find("div", {"id": re.compile("^description")}).text
     novel = {
         "title": title,
+        "url": url,
+        "id": id,
         "followers": followers,
         "rating": rating,
         "pages": pages,
