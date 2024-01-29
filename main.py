@@ -16,10 +16,11 @@ def scrape_rising_stars():
     url = "https://www.royalroad.com/fictions/rising-stars"
     fictions = parserList.get_fiction_list(url)
 
+    print(fictions)
+
     # getting time
     now = datetime.now()
     current_time = now.strftime("%H:%M:%S")
-
 
 
 def create_sql_insert(fics, url):
