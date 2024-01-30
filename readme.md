@@ -10,3 +10,8 @@ sudo systemctl start docker
 https://docs.docker.com/get-started/02_our_app/
 docker build -t royal-stat-collector .
 docker run -it royal-stat-collector
+
+# Crontab
+crontab -e -- to edit crontab
+0 * * * * docker run --rm -t royal-stat-collector -- crontab entry to run docker every hour
+https://crontab.guru/examples.html -- guide to running cornjobs at various intervals

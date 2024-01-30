@@ -42,11 +42,35 @@ class pl_db:
 
         self.connection.commit()
 
-    # def push_to_rising_stars(self):
-    #     self.cursor.execute("""
-    #                 CREATE TABLE FICTIONS (
-    #                     id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    #                 );
-    #             """)
-    #     self.connections.commit()
+    def delete_duplicates_in_fictions(self):
+        insert_stmt = """
+            DELETE FROM fictions 
+            WHERE NOT EXISTS (
+                SELECT 1 
+                FROM fictions AS t2
+                WHERE fictions.id = t2.id
+                      fictions.title = t2.title
+                      fictions.description = t2.description
+                      fictions.rating = t2.rating
+                      fictions.chapters = t2.chapters
+                      fictions.retrieved_time > t2.retrieved_time
+                      fictions.url = t2.url
+                      fictions.followers = t2.followers
+                      fictions.pages = t2.pages
+                      fictions.views = t2.views
+            )
+        """
+    def push_to_rating(self, fics, category):
+        insert_stmt = """
+            INSERT INTO rising_stars ( 
+                id, retrieved_time, category, placement
+            ) VALUES (
+                %s, %s, %s, %s
+            );
+        """
+
+        for fic in fics:
+            self.cursor.execute(insert_stmt, (fic["id"], fic["retrieved_time"], category, fic["placement"]))
+
+        self.connection.commit()
 

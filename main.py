@@ -15,19 +15,17 @@ import planetScale_utils
 def scrape_rising_stars():
     url = "https://www.royalroad.com/fictions/rising-stars"
     fictions = parserList.get_fiction_list(url)
-
-    print(fictions)
+    return fictions
+def update_databace(fictions, category):
+    db = planetScale_utils.pl_db()
+    db.push_to_fic(fictions)
+    db.push_to_rating(fics, category)
 
     # getting time
     now = datetime.now()
     current_time = now.strftime("%H:%M:%S")
-
-
-def create_sql_insert(fics, url):
-    db = planetScale_utils.pl_db()
-    db.push_to_fic(fics)
-    db.push_to_rising_stars(fics)
-
+    print(f"scraped and pushed to database at ${current_time}")
 
 if __name__ == "__main__":
-    scrape_rising_stars()
+    fics = scrape_rising_stars()
+    update_databace(fics, "default")

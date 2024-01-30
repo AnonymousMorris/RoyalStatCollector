@@ -1,9 +1,9 @@
-
 from datetime import datetime, timezone
 
 from bs4 import BeautifulSoup
 import re
 import requests
+import itertools
 
 from more_itertools import strip
 
@@ -12,7 +12,7 @@ def get_int(str):
     return int(re.compile('\d+').search(str).group())
 
 
-def parse_fic(fic, crn_time):
+def parse_fic(fic, crn_time, placement):
     title = fic.find("h2", {"class": "fiction-title"}).text.strip("\n")
     url = fic.find("h2", {"class": "fiction-title"}).find("a")['href']
     id = int(re.search("fiction\/(\d+)", url).group(1))
@@ -20,7 +20,7 @@ def parse_fic(fic, crn_time):
     followers = get_int(stats[0].text.replace(",", ""))
     rating = float(fic.find("div", {"aria-label": re.compile("^Rating:")}).find("span")['title'])
     pages = get_int(stats[2].text.strip("\n"))
-    views = get_int(stats[3].text.strip("\n"))
+    views = get_int(stats[3].text.replace(",", ""))
     chapters = get_int(stats[4].text)
     schedule = stats[5].text.strip("\n")
     summary = fic.find("div", {"id": re.compile("^description")}).text
@@ -35,6 +35,7 @@ def parse_fic(fic, crn_time):
         "chapters": chapters,
         "schedule": schedule,
         "retrieved_time": crn_time,
+        "placement": placement,
         "description": summary,
     }
     return novel
@@ -46,7 +47,12 @@ def parse_list(page):
     fiction_items = fictions.find_all("div", {"class": "fiction-list-item row"})
     # print(fiction_items)
     crn_time = datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S')
-    fictions = list(map((lambda f: parse_fic(f, crn_time)), fiction_items))
+
+    fictions = (
+        list(
+            map((lambda f, p: parse_fic(f, crn_time, p)), fiction_items, itertools.count(1, 1))
+        )
+    )
     return fictions
 
 
