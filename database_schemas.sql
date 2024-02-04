@@ -20,9 +20,10 @@ CREATE TABLE IF NOT EXISTS rising_stars (
     CONSTRAINT PK_Rising_stars PRIMARY KEY (id, retrieved_time)
 );
 
+/* select distinct fictions discarding duplicates that only differ in retrieved_time */
 SELECT *
 FROM fictions
-WHERE EXISTS(
+WHERE NOT EXISTS(
     SELECT 1
     FROM fictions AS t2
     WHERE fictions.id = t2.id
@@ -30,9 +31,21 @@ WHERE EXISTS(
       AND fictions.description = t2.description
       AND fictions.rating = t2.rating
       AND fictions.chapters = t2.chapters
-      AND fictions.retrieved_time > t2.retrieved_time
+      AND fictions.retrieved_time < t2.retrieved_time
       AND fictions.url = t2.url
       AND fictions.followers = t2.followers
       AND fictions.pages = t2.pages
       AND fictions.views = t2.views
+);
+
+/* select distinct fictions only caring about id and title */
+SELECT *
+FROM fictions
+WHERE NOT EXISTS(
+    SELECT 1
+    FROM fictions AS t2
+    WHERE fictions.id = t2.id
+      AND fictions.title = t2.title
+      AND fictions.description = t2.description
+      AND fictions.retrieved_time < t2.retrieved_time
 );
